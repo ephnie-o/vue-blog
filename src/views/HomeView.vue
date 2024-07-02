@@ -1,25 +1,40 @@
 <template>
   <div class="home">
-    Home
-    <p>My name is {{ name }} and age is {{ age }}</p>
-    <button @click="handleClick">Click</button>
+    <h1>Home</h1>
+    <div v-if="error" class="layout">{{ error }}</div>
+    <div v-if="posts.length">
+      <PostList :posts="posts" />
+    </div>
+    <div v-else>
+      <Spinner />
+    </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue'
+import PostList from '../components/PostList.vue'
+import getPosts from '../composables/getPosts'
+import Spinner from '../components/Spinner.vue'
+
 export default {
   name: 'HomeView',
+  components: { PostList, Spinner },
   setup() {
-    let name = 'mario'
-    let age = 30
+    const { posts, error, load } = getPosts()
 
-    const handleClick = () => {
-      console.log('clicked')
-    }
+    load()
 
-    return {
-      name, age, handleClick
-    }
+    return { posts, error }
   }
 }
 </script>
+
+<style>
+  .home {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px;
+  }
+</style>
+
